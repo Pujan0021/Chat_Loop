@@ -23,7 +23,7 @@ const signUp = async (req, res) => {
         }
         const existingUser = await user.findOne({ email });
         if (existingUser) {
-            console.log("UserAlready Exists");
+            console.log("User Already Exists");
             return res.status(400).send({
                 message: "Email already Taken , Try another ....!"
             })
@@ -40,8 +40,8 @@ const signUp = async (req, res) => {
             profilePic
         })
         if (newUser) {
-            await newUser.save();
-            generateToken(newUser._id, res);
+            const savedUser = await newUser.save();
+            generateToken(savedUser._id, res);
 
             console.log(`NewUser-> ${newUser.fullName} Created SuccessFully`);
             return res.status(201).json({
