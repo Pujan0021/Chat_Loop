@@ -1,21 +1,72 @@
-const validator = require("validator")
+const validator = require("validator");
+const user = require("../models/user.model.js")
+const bcrypt = require("bcrypt");
+const generateToken = require("../lib/util.js")
 const signUp = async (req, res) => {
-    const { fullName, email, password } = req.body;
-    if (!fullName || !email || !password) {
-        res.status(400).json({
-            message: "All Fields are Required!"
+    try {
+
+        const { fullName, email, password, profilePic } = req.body;
+        if (!fullName || !email || !password) {
+            return res.status(400).json({
+                message: "All Fields are Required!"
+            })
+        }
+        if (password.length < 6) {
+            return res.status(400).json({
+                message: "Password must be at least of 6 characters!"
+            })
+        }
+        if (!validator.isEmail(email)) {
+            return res.status(400).json({
+                message: "Not a Valid Email!"
+            })
+        }
+        const existingUser = await user.findOne({ email });
+        if (existingUser) {
+            console.log("UserAlready Exists");
+            return res.status(400).send({
+                message: "Email already Taken , Try another ....!"
+            })
+        }
+        //Password Hashing
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+
+        const newUser = new user({
+            fullName,
+            email,
+            password: hashedPassword,
+            profilePic
+        })
+        if (newUser) {
+            await newUser.save();
+            generateToken(newUser._id, res);
+
+            console.log(`NewUser-> ${newUser.fullName} Created SuccessFully`);
+            return res.status(201).json({
+                _id: newUser._id,
+                fullName: newUser.fullName,
+                email: newUser.email,
+                profilePic: newUser.profilePic,
+            })
+
+        } else {
+            return res.status(400).json({
+                message: "!!!!! Invalid User Data !!!!!"
+            })
+        }
+    } catch (err) {
+        if (err.code === 11000) {
+            return res.status(400).json({ error: "Duplicate Key" });
+        }
+
+        console.log(err.message, "!!!!! SignUp Failed !!!!!");
+        return res.status(500).json({
+            message: "Internal Server Error!"
         })
     }
-    if (password.length < 6) {
-        res.status(400).json({
-            message: "Password must be at least of 6 characters!"
-        })
-    }
-    if (validator.isEmail(email)) {
-        res.status(400).json({
-            message: "Not a Valid Email!"
-        })
-    }
+
 
 }
 

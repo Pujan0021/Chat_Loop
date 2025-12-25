@@ -8,9 +8,9 @@ dotenv.config();
 const PORT = process.env.PORT || 3000;
 
 //MiddleWares
+app.use(express.json());// Should be before routers
 app.use("/api/auth", authRouter);
 app.use("/api/message", messageRouter);
-app.use(express.json());
 
 
 //Server Connection
