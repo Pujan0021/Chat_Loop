@@ -6,9 +6,15 @@ const messageRouter = require("./src/Routes/message.route.js");
 const connectDB = require("./src/lib/db.js");
 dotenv.config();
 const PORT = process.env.PORT || 3000;
+
+//MiddleWares
 app.use("/api/auth", authRouter);
 app.use("/api/message", messageRouter);
+app.use(express.json());
+
+
+//Server Connection
 app.listen(PORT, () => {
     console.log('Server Started SuccessFully');
-    connectDB();
+    connectDB();//DataBase Connection
 })
