@@ -117,4 +117,7 @@ const logOut = (_, res) => {
         message: "Logged Out SuccessFully...."
     });
 };
-module.exports = { signUp, logIn, logOut } 
+const updateProfile = (req, res) => {
+
+};
+module.exports = { signUp, logIn, logOut, updateProfile };

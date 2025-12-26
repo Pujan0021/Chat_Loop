@@ -1,4 +1,5 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");
 const app = express();
 const dotenv = require("dotenv")
 const authRouter = require("./src/Routes/auth.route.js")
@@ -11,6 +12,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());// Should be before routers
 app.use("/api/auth", authRouter);
 app.use("/api/message", messageRouter);
+app.use(cookieParser());
 
 
 //Server Connection
