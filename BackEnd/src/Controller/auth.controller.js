@@ -1,7 +1,10 @@
 const validator = require("validator");
 const user = require("../models/user.model.js")
 const bcrypt = require("bcrypt");
-const generateToken = require("../lib/util.js")
+const generateToken = require("../lib/util.js");
+const sendWelcomeEmail = require("../emails/emailHandlers.js");
+const dotenv = require('dotenv');
+dotenv.config();
 const signUp = async (req, res) => {
     try {
 
@@ -40,16 +43,26 @@ const signUp = async (req, res) => {
             profilePic
         })
         if (newUser) {
+
             const savedUser = await newUser.save();
             generateToken(savedUser._id, res);
-
             console.log(`NewUser-> ${newUser.fullName} Created SuccessFully`);
+            //SendWelcome Email
+            try {
+                await sendWelcomeEmail(savedUser.email, savedUser.fullName, process.env.CLIENT_URL)
+
+            } catch (error) {
+                console.error("Welcome email failed:", error.message);
+
+            };
             return res.status(201).json({
                 _id: newUser._id,
                 fullName: newUser.fullName,
                 email: newUser.email,
                 profilePic: newUser.profilePic,
-            })
+            });
+
+
 
         } else {
             return res.status(400).json({
