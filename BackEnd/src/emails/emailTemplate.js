@@ -1,5 +1,5 @@
 const createWelcomeEmailTemplate = (name, clientURL) => {
-    return `
+  return `
   <!DOCTYPE html>
   <html lang="en">
   <head>
