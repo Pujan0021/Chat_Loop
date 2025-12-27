@@ -1,14 +1,16 @@
 const jwt = require("jsonwebtoken");
-const env = require(".../.env");
+// const ENV = require("../lib/env.js");
 const User = require("../models/user.model.js")
 
+
+// Needed Profile Update (Only if the user has the token, and which is not expired);
 const protectRoute = async (req, res, next) => {
     try {
         const token = req.cookie.jwt;
         if (!token) return res.status(401).json({
             message: "Unauthorized - No Token Provided"
         });
-        const decoded = jwt.verify(token, env.JWT_SECRET);
+        const decoded = jwt.verify(token, ENV.JWT_SECRET);
         if (!decoded) return res.status(401).json({
             message: "Unauthorized - Invalid Token"
         });

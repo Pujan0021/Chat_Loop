@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const generateToken = require("../lib/util.js");
 const sendWelcomeEmail = require("../emails/emailHandlers.js");
 const dotenv = require('dotenv');
+const cloudinary = require("../lib/cloudinary.js")
 dotenv.config();
 const signUp = async (req, res) => {
     try {
@@ -117,7 +118,29 @@ const logOut = (_, res) => {
         message: "Logged Out SuccessFully...."
     });
 };
-const updateProfile = (req, res) => {
+const updateProfilePic = async (req, res) => {
+    try {
+        const { profilePic } = req.body;
+        if (!profilePic) {
+            return res.status(400).json({ message: "Profile Pic Required" });
+        }
 
+        const userId = req.user._id;
+
+        // Upload to Cloudinary
+        const uploadResponse = await cloudinary.uploader.upload(profilePic);
+
+        // Update user profile picture
+        const updatedUser = await user.findByIdAndUpdate(
+            userId,
+            { profilePic: uploadResponse.secure_url },
+            { new: true }
+        );
+
+        res.status(200).json(updatedUser);
+    } catch (err) {
+        console.error("Error Updating Profile:", err);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
 };
-module.exports = { signUp, logIn, logOut, updateProfile };
+module.exports = { signUp, logIn, logOut, updateProfilePic };
