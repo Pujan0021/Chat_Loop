@@ -1,7 +1,14 @@
 const express = require("express");
 const Router = express.Router();
-const { signUp, logIn, logOut, updateProfile } = require("../Controller/auth.controller.js");
-const protectRoute = require("../middleware/auth.middleware.js");
-const authRouter = Router.post("/signup", signUp).post("/logout", logOut).post("/login", logIn).put("/update-profile", protectRoute, updateProfile)
 
-module.exports = authRouter;
+const arcjetProtection = require("../middleware/arcjet.middleware.js");
+const { signUp, logIn, logOut, updateProfilePic } = require("../Controller/auth.controller.js");
+const protectRoute = require("../middleware/auth.middleware.js");
+
+// Define routes separately
+Router.post("/signup", signUp);
+Router.post("/logout", logOut);
+Router.post("/login", arcjetProtection, logIn);
+Router.put("/update-profile", protectRoute, updateProfilePic);
+
+module.exports = Router;
