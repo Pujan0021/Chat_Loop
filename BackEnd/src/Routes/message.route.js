@@ -1,10 +1,11 @@
 const protectRoute = require("../middleware/auth.middleware.js")
 const express = require("express");
 const Router = express.Router();
+Router.use(protectRoute);
 const { getAllContacts, getMessageByUserId, sendMessage, getChatPartners } = require("../Controller/message.controller.js")
-Router.get("/contacts", protectRoute, getAllContacts);
-Router.get("/chats", protectRoute, getChatPartners);
-Router.get("/:id", protectRoute, getMessageByUserId);
-Router.post("/send/:id", protectRoute, sendMessage);
+Router.get("/contacts", getAllContacts);
+Router.get("/chats", getChatPartners);
+Router.get("/:id", getMessageByUserId);
+Router.post("/send/:id", sendMessage);
 
 module.exports = Router;
