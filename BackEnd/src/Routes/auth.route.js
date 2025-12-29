@@ -9,6 +9,12 @@ const protectRoute = require("../middleware/auth.middleware.js");
 Router.post("/signup", signUp);
 Router.post("/logout", logOut);
 Router.post("/login", arcjetProtection, logIn);
+Router.get("/test", arcjetProtection, ((req, res) => {
+    res.status(200).json({
+        message: "Test Successful"
+    })
+
+}));
 Router.put("/update-profile", protectRoute, updateProfilePic);
 
 module.exports = Router;
