@@ -1,7 +1,6 @@
-// lib/arcjet.js
-const arcjet = require("@arcjet/node");
-const { shield, detectBot, slidingWindow } = arcjet;
 
+const arcjet = require("@arcjet/node").default;
+const { shield, detectBot, slidingWindow } = require("@arcjet/node");
 const aj = arcjet({
     key: process.env.ARCJET_KEY,
     rules: [
