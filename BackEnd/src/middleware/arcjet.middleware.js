@@ -1,4 +1,4 @@
-const isSpoofedBot = require("@arcjet/inspect");
+const { isSpoofedBot } = require("@arcjet/inspect");
 const aj = require("../lib/arcjet.js");
 
 const arcjetProtection = async (req, res, next) => {
