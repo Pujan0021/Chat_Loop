@@ -76,4 +76,24 @@ const sendMessage = async (req, res) => {
         });
     }
 };
-module.exports = { getAllContacts, getMessageByUserId, sendMessage };
+const getChatPartners = async (req, res) => {
+    try {
+
+        const messages = await Message.find({
+            $or: [{ senderId: loggedInUserId }, { receiverId: loggedInUserId }]
+        });
+        const chatPartnersIds = [...new Set(
+            messages.map((msg) =>
+                msg.senderId.toString() === loggedInUserId.toString() ? msg.receiverId.toString() : msg.senderId.toString())
+        )];
+        const chatPartners = await user.find({ _id: { $in: chatPartnersIds } }).select("-password");
+        res.status(200).json(chatPartners);
+    } catch (error) {
+        console.error("Error In Chat PArtners: ", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+}
+module.exports = { getAllContacts, getMessageByUserId, sendMessage, getChatPartners };
