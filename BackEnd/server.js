@@ -16,7 +16,7 @@ app.use(express.json());// Should be before routers
 app.use(cookieParser());
 app.use("/api/auth", authRouter);
 app.use("/api/message", messageRouter);
-import jwt from "jsonwebtoken";
+const jwt = require("jsonwebtoken")
 
 app.get("/auth/check", (req, res) => {
     const token = req.cookies?.token || req.headers["authorization"];
