@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
 const ENV = require("../lib/env.js");
 const User = require("../models/user.model.js");
-const generateToken = require("../lib/util.js");
 const protectRoute = async (req, res, next) => {
     try {
         const token = req.cookies.jwt;
