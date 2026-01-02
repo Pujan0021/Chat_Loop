@@ -1,12 +1,15 @@
 import React from "react";
 import useAuthStore from "../store/useAuthStore.js";
+import useChatStore from "../store/useAuthStore.js";
 import ProfileHeader from "../components/ProfileHeader.jsx";
 import ActiveTabSwitch from "../components/ActiveTabSwitch.jsx";
 import ChatsLists from "../components/ChatsLists.jsx";
 import ChatContainer from "../components/ChatContainer.jsx";
 import NoConversationPlaceholder from "../components/NoConversationPlaceholder.jsx";
+import ContactList from "../components/ContactList.jsx";
 const ChatPage = () => {
   const { logout } = useAuthStore();
+  const { selectedUser, activeTab } = useChatStore();
   return (
     <>
       <div className="relative w-full max-w-6xl h-(800px)">
