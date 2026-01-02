@@ -8,7 +8,28 @@ const ProfileHeader = () => {
   const { isSoundEnable, toggleSound } = useChatStore();
   const [selectedImg, setSelectedImg] = useState(null);
   const fileInputRef = useRef(null);
-  const handleImageUpload = (e) => {};
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Preview locally
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setSelectedImg(reader.result);
+    };
+    reader.readAsDataURL(file);
+
+    try {
+      // Upload/update profile (assuming updateProfile accepts FormData or file)
+      const formData = new FormData();
+      formData.append("profilePic", file);
+
+      await updateProfile(formData);
+      console.log("Profile picture updated successfully");
+    } catch (error) {
+      console.error("Failed to update profile picture:", error);
+    }
+  };
   return (
     <div className=" p-6 border-b border-slate-700/50">
       <div className="flex items-center justify-between">
@@ -29,8 +50,7 @@ const ProfileHeader = () => {
               </div>
             </button>
             <input
-              type="
-            file"
+              type="file"
               accept="image/*"
               ref={fileInputRef}
               onChange={handleImageUpload}
