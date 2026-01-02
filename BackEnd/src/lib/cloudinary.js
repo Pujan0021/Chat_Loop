@@ -1,5 +1,5 @@
 const cloudinary = require("cloudinary");
-const ENV = ("./env.js")
+const ENV = require("./env.js")
 
 
 cloudinary.config({

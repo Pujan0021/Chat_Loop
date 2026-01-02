@@ -18,17 +18,17 @@ app.use("/api/auth", authRouter);
 app.use("/api/message", messageRouter);
 const jwt = require("jsonwebtoken")
 
-app.get("/auth/check", (req, res) => {
-    const token = req.cookies?.token || req.headers["authorization"];
-    if (!token) {
-        return res.json({ authenticated: false });
-    }
+app.get("/api/auth/check", (req, res) => {
+    const rawToken = req.cookies?.jwt || req.headers["authorization"];
+    const token = rawToken?.startsWith("Bearer ") ? rawToken.split(" ")[1] : rawToken;
+
+    if (!token) return res.status(401).json({ authenticated: false });
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         return res.json({ authenticated: true, user: decoded });
-    } catch (err) {
-        return res.json({ authenticated: false });
+    } catch {
+        return res.status(401).json({ authenticated: false });
     }
 });
 

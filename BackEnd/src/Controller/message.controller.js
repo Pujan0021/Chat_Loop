@@ -18,24 +18,19 @@ const getAllContacts = async (req, res) => {
 }
 const getMessageByUserId = async (req, res) => {
     try {
-
         const myId = req.user._id;
         const { id: userToChat } = req.params;
-        const message = await Message.fing({
+        const messages = await Message.find({
             $or: [
                 { senderId: myId, receiverId: userToChat },
                 { senderId: userToChat, receiverId: myId }
-
             ]
-        })
-        res.status(200).json(message);
+        });
+        res.status(200).json(messages);
     } catch (err) {
-        console.log("Error In Getting Message");
-        res.status(500).json({
-            message: "Internal Server Error"
-        })
+        res.status(500).json({ message: "Internal Server Error" });
     }
-}
+};
 const sendMessage = async (req, res) => {
     try {
         const { text, image } = req.body;
