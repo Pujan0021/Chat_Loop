@@ -52,7 +52,7 @@ function LogInPage() {
                         setFormData({ ...formData, email: e.target.value })
                       }
                       className="input"
-                      placeholder="jimmy@gmail.com"
+                      placeholder="bhojey@gmail.com"
                     />
                   </div>
                 </div>

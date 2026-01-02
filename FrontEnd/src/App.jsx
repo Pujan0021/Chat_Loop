@@ -29,17 +29,22 @@ const App = () => {
       <div className="absolute top-0 -left-4 size-96 bg-pink-500 opacity-20 blur-[100px]" />
       <div className="absolute bottom-0 -right-4 size-96 bg-cyan-500 opacity-20 blur-[100px]" />
       <Routes>
+        {/* Home route: only accessible if logged in */}
         <Route
           path="/"
-          element={authUser ? <ChatPage /> : <Navigate to={"/loginpage"} />}
+          element={authUser ? <ChatPage /> : <Navigate to="/loginpage" />}
         />
+
+        {/* Signup route: accessible without login */}
         <Route
           path="/signuppage"
-          element={!authUser ? <SignUp /> : <Navigate to={"/"} />}
+          element={!authUser ? <SignUp /> : <Navigate to="/" />}
         />
+
+        {/* Login route: accessible without login */}
         <Route
           path="/loginpage"
-          element={!authUser ? <LoginPage /> : <Navigate to={"/"} />}
+          element={!authUser ? <LoginPage /> : <Navigate to="/" />}
         />
       </Routes>
       <Toaster />
