@@ -5,7 +5,6 @@ import {
   MessageCircleIcon,
   LockIcon,
   MailIcon,
-  UserIcon,
   LoaderIcon,
 } from "lucide-react";
 import { Link } from "react-router";
@@ -52,7 +51,7 @@ function LogInPage() {
                         setFormData({ ...formData, email: e.target.value })
                       }
                       className="input"
-                      placeholder="bhojey@gmail.com"
+                      placeholder="user@gmail.com"
                     />
                   </div>
                 </div>
