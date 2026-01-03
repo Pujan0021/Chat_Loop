@@ -73,7 +73,7 @@ const sendMessage = async (req, res) => {
 };
 const getChatPartners = async (req, res) => {
     try {
-
+        const loggedInUserId = req.user._id;
         const messages = await Message.find({
             $or: [{ senderId: loggedInUserId }, { receiverId: loggedInUserId }]
         });
