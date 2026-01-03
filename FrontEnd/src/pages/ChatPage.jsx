@@ -1,6 +1,6 @@
 import React from "react";
 import useAuthStore from "../store/useAuthStore.js";
-import useChatStore from "../store/useAuthStore.js";
+import useChatStore from "../store/useChatStore.js";
 import ProfileHeader from "../components/ProfileHeader.jsx";
 import ActiveTabSwitch from "../components/ActiveTabSwitch.jsx";
 import ChatsLists from "../components/ChatsLists.jsx";
@@ -17,7 +17,7 @@ const ChatPage = () => {
           <ProfileHeader />
           <ActiveTabSwitch />
           <div className="flex-1 overflow-y-auto p-4 space-y-2">
-            {activeTab == "chats" ? <ChatsLists /> : <ContactList />}
+            {activeTab === "chats" ? <ChatsLists /> : <ContactList />}
           </div>
         </div>
 

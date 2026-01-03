@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { LogOutIcon, VolumeOffIcon, Volume2Icon } from "lucide-react";
 import useAuthStore from "../store/useAuthStore";
 import useChatStore from "../store/useChatStore";
+const mouseClickSound = new Audio("/Sounds/mouse-click.mp3");
 
 const ProfileHeader = () => {
   const { logout, authUser, updateProfile } = useAuthStore();
@@ -12,23 +13,14 @@ const ProfileHeader = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Preview locally
     const reader = new FileReader();
-    reader.onloadend = () => {
-      setSelectedImg(reader.result);
-    };
     reader.readAsDataURL(file);
 
-    try {
-      // Upload/update profile (assuming updateProfile accepts FormData or file)
-      const formData = new FormData();
-      formData.append("profilePic", file);
-
-      await updateProfile(formData);
-      console.log("Profile picture updated successfully");
-    } catch (error) {
-      console.error("Failed to update profile picture:", error);
-    }
+    reader.onloadend = async () => {
+      const base64Image = reader.result;
+      setSelectedImg(base64Image);
+      await updateProfile({ profilePic: base64Image });
+    };
   };
   return (
     <div className=" p-6 border-b border-slate-700/50">
