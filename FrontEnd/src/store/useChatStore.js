@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import axiosInstance from "../lib/axios.js";
 import toast from "react-hot-toast";
+
 const useChatStore = create((set, get) => ({
     allContacts: [],
     chats: [],
@@ -10,48 +11,60 @@ const useChatStore = create((set, get) => ({
     isUsersLoading: false,
     isMessagesLoading: false,
     isSoundEnable: JSON.parse(localStorage.getItem("isSoundEnable")) === true,
-    toggleSound: () => {
-        localStorage.setItem("isSoundEnable", !get().isSoundEnable)
-        set({ isSoundEnable: !get().isSoundEnable })
 
+    toggleSound: () => {
+        localStorage.setItem("isSoundEnable", !get().isSoundEnable);
+        set({ isSoundEnable: !get().isSoundEnable });
     },
+
     setActiveTab: (tab) => set({ activeTab: tab }),
     setSelectedUser: (selectedUser) => set({ selectedUser }),
+
     getAllContacts: async () => {
         set({ isUsersLoading: true });
         try {
-            const res = await axiosInstance.get("/messages/contact");
-            set({ allContacts: res.data })
+            const res = await axiosInstance.get("/messages/contacts");
+            set({ allContacts: res.data });
         } catch (error) {
-            toast.error(error.response.data.message)
-
+            toast.error(error.response?.data?.message || "Something went wrong");
         } finally {
-            set({ isUsersLoading: false })
+            set({ isUsersLoading: false });
         }
     },
+
     getMyChatPatterns: async () => {
         set({ isUsersLoading: true });
         try {
-            const res = await axiosInstance.get("/messages/contact");
-            set({ chats: res.data })
+            const res = await axiosInstance.get("/messages/chats"); // 
+            set({ chats: res.data });
         } catch (error) {
-            toast.error(error.response.data.message)
-
+            toast.error(error.response?.data?.message || "Something went wrong");
         } finally {
-            set({ isUsersLoading: false })
+            set({ isUsersLoading: false });
         }
     },
+
     getMessagesById: async (userId) => {
         set({ isMessagesLoading: true });
         try {
-            const res = await axiosInstance.get(`/message/${userId}`);
-            set: ({ messages: res.data })
+            const res = await axiosInstance.get(`/messages/${userId}`);
+            set({ messages: res.data });
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Something went wrong");
+        } finally {
+            set({ isMessagesLoading: false });
+        }
+    },
+    sendMessage: async (messageData) => {
+        const { selectedUser, messages } = get();
+        try {
+            const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`, messageData);
+            set: ({ messages: messages.concat(res.data) })
         } catch (error) {
             toast.error(error.response?.data?.message || "Something Went Wrong")
-        } finally {
-            set: ({ isMessagesLoading: false })
-        }
 
+        }
     }
-}))
-export default useChatStore
+}));
+
+export default useChatStore;
