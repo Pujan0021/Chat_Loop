@@ -12,8 +12,11 @@ const ENV = require("./src/lib/env.js");
 
 //MiddleWares
 app.use(cors({ origin: ENV.CLIENT_URL, credentials: true }));
-app.use(express.json());// Should be before routers
+app.use(express.json({ limit: '10mb' }));// Should be before routers
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
+
 app.use(cookieParser());
+
 app.use("/api/auth", authRouter);
 app.use("/api/message", messageRouter);
 const jwt = require("jsonwebtoken")
