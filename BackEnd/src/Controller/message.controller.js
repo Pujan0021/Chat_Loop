@@ -1,3 +1,4 @@
+const { getReceiverSocketId, io } = require("../lib/socket.js");
 const Message = require("../models/message.js");
 const user = require("../models/user.model.js");
 const { cloudinary } = require('cloudinary');
@@ -56,7 +57,10 @@ const sendMessage = async (req, res) => {
 
         // Save to DB
         await newMessage.save();
-
+        const receiverSocketId = getReceiverSocketId(receiverId);
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("newMessage", newMessage);
+        }
         // Respond to client
         res.status(201).json({
             success: true,
