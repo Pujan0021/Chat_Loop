@@ -1,6 +1,6 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
-const app = express();
+const { app, server } = require("./src/lib/socket.js");
 const dotenv = require("dotenv")
 const authRouter = require("./src/Routes/auth.route.js")
 const messageRouter = require("./src/Routes/message.route.js");
@@ -36,7 +36,7 @@ app.get("/api/auth/check", (req, res) => {
 });
 
 //Server Connection
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log('Server Started SuccessFully');
     connectDB();//DataBase Connection
 })
