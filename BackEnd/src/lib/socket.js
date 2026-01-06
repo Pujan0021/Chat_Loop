@@ -1,6 +1,6 @@
 const express = require("express");
 const http = require("http");
-const ENV = "./env.js";
+const ENV = require("./env.js");
 const { Server } = require("socket.io");
 const app = express();
 const server = http.createServer(app);
