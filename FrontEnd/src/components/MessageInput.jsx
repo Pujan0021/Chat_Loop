@@ -1,36 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import useKeyboardSound from "../hooks/useKeyboardSound";
 import useChatStore from "../store/useChatStore";
 import toast from "react-hot-toast";
-import { XIcon } from "lucide-react";
+import { XIcon, ImageIcon, SendIcon } from "lucide-react";
 
 const MessageInput = () => {
   const { playRandomSound } = useKeyboardSound();
   const [text, setText] = useState("");
-  const [imagePreview, setImagePreview] = useState("");
+  const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
   const { sendMessage, isSoundEnabled } = useChatStore();
 
-  const handleSendMessage = (e) => {
+  const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!text.trim() && !imagePreview) return;
-    if (isSoundEnabled) playRandomSound();
-    sendMessage({
-      text: text.trim(),
-      image: imagePreview,
-    });
-    setText("");
-    setImagePreview("");
-    if (fileInputRef.current) fileInputRef.current.value = "";
+
+    try {
+      if (isSoundEnabled) playRandomSound();
+      await sendMessage({ text: text.trim(), image: imagePreview });
+      setText("");
+      setImagePreview(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    } catch (err) {
+      toast.error(err?.message || "Failed to send message");
+    }
   };
+
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
+    if (!file) return;
     if (!file.type.startsWith("image/")) {
-      toast.error("Please Select an image file");
+      toast.error("Please select an image file");
       return;
     }
     const reader = new FileReader();
-    reader.onloaded = () => setImagePreview(reader.result);
+    reader.onload = () => setImagePreview(reader.result);
     reader.readAsDataURL(file);
   };
 
@@ -38,6 +42,7 @@ const MessageInput = () => {
     setImagePreview(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
+
   return (
     <div className="p-4 border-t border-slate-700/50">
       {imagePreview && (
@@ -68,9 +73,9 @@ const MessageInput = () => {
           value={text}
           onChange={(e) => {
             setText(e.target.value);
-            isSoundEnabled && playRandomKeyStrokeSound();
+            if (isSoundEnabled) playRandomSound();
           }}
-          className="flex-1 bg-slate-800/50 border border-slate-700/50 rounded-lg py-2 px-4"
+          className="flex-1 bg-slate-800/50 border border-slate-700/50 rounded-lg py-2 px-4 text-slate-200 placeholder:text-slate-500"
           placeholder="Type your message..."
         />
 
@@ -88,13 +93,16 @@ const MessageInput = () => {
           className={`bg-slate-800/50 text-slate-400 hover:text-slate-200 rounded-lg px-4 transition-colors ${
             imagePreview ? "text-cyan-500" : ""
           }`}
+          aria-label="Attach image"
         >
           <ImageIcon className="w-5 h-5" />
         </button>
+
         <button
           type="submit"
           disabled={!text.trim() && !imagePreview}
-          className=" from-cyan-500 to-cyan-600 text-white rounded-lg px-4 py-2 font-medium hover:from-cyan-600 hover:to-cyan-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-linear-to-r from-cyan-500 to-cyan-600 text-white rounded-lg px-4 py-2 font-medium hover:from-cyan-600 hover:to-cyan-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          aria-label="Send message"
         >
           <SendIcon className="w-5 h-5" />
         </button>
