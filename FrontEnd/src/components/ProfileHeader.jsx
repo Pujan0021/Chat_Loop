@@ -1,15 +1,18 @@
-import React, { useRef, useState } from "react";
+import { useState, useRef } from "react";
 import { LogOutIcon, VolumeOffIcon, Volume2Icon } from "lucide-react";
-import useAuthStore from "../store/useAuthStore";
+import useAuthStore from "../store/useAuthStore.js";
 import useChatStore from "../store/useChatStore";
+
 const mouseClickSound = new Audio("/Sounds/mouse-click.mp3");
 
-const ProfileHeader = () => {
+function ProfileHeader() {
   const { logout, authUser, updateProfile } = useAuthStore();
   const { isSoundEnable, toggleSound } = useChatStore();
   const [selectedImg, setSelectedImg] = useState(null);
+
   const fileInputRef = useRef(null);
-  const handleImageUpload = async (e) => {
+
+  const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -22,10 +25,12 @@ const ProfileHeader = () => {
       await updateProfile({ profilePic: base64Image });
     };
   };
+
   return (
-    <div className=" p-6 border-b border-slate-700/50">
+    <div className="p-6 border-b border-slate-700/50">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
+          {/* AVATAR */}
           <div className="avatar online">
             <button
               className="size-14 rounded-full overflow-hidden relative group"
@@ -33,14 +38,14 @@ const ProfileHeader = () => {
             >
               <img
                 src={selectedImg || authUser.profilePic || "/avatar.png"}
-                alt="User Image"
-                className="
-              size-full object-cover"
+                alt="User image"
+                className="size-full object-cover"
               />
               <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                 <span className="text-white text-xs">Change</span>
               </div>
             </button>
+
             <input
               type="file"
               accept="image/*"
@@ -49,27 +54,36 @@ const ProfileHeader = () => {
               className="hidden"
             />
           </div>
+
+          {/* USERNAME & ONLINE TEXT */}
           <div>
-            <h3 className="text-slate-200 font-medium text-base max-w-(180px) truncate">
+            <h3 className="text-slate-200 font-medium text-base max-w-45 truncate">
               {authUser.fullName}
             </h3>
-            <p className="text-slate-400"> Online</p>
+
+            <p className="text-slate-400 text-xs">Online</p>
           </div>
         </div>
+
+        {/* BUTTONS */}
         <div className="flex gap-4 items-center">
+          {/* LOGOUT BTN */}
           <button
             className="text-slate-400 hover:text-slate-200 transition-colors"
             onClick={logout}
           >
             <LogOutIcon className="size-5" />
           </button>
+
+          {/* SOUND TOGGLE BTN */}
           <button
             className="text-slate-400 hover:text-slate-200 transition-colors"
             onClick={() => {
-              mouseClickSound.currentTime = 0;
+              // play click sound before toggling
+              mouseClickSound.currentTime = 0; // reset to start
               mouseClickSound
                 .play()
-                .catch((error) => console.log("Audio play failed", error));
+                .catch((error) => console.log("Audio play failed:", error));
               toggleSound();
             }}
           >
@@ -83,6 +97,5 @@ const ProfileHeader = () => {
       </div>
     </div>
   );
-};
-
+}
 export default ProfileHeader;
