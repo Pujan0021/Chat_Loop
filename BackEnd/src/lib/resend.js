@@ -1,10 +1,9 @@
-const { Resend } = require("resend");
-console.log(process.env.RESEND_API_KEY)
-const dotenv = require("dotenv");
-dotenv.config();
-const resendClient = new Resend(process.env.RESEND_API_KEY);
-const sender = {
-    email: process.env.EMAIL_FROM,
-    name: process.env.EMAIL_FROM_NAME
-}
-module.exports = { resendClient, sender };
+import { Resend } from "resend";
+import { ENV } from "./env.js";
+
+export const resendClient = new Resend(ENV.RESEND_API_KEY);
+
+export const sender = {
+    email: ENV.EMAIL_FROM,
+    name: ENV.EMAIL_FROM_NAME,
+};
