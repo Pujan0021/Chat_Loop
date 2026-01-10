@@ -1,17 +1,21 @@
-import React, { useEffect } from "react";
-import useChatStore from "../store/useChatStore";
-import UsersLoadingSkeleton from "./UserLoadingSkeleton";
+import { useEffect } from "react";
+import { useChatStore } from "../store/useChatStore";
+import UsersLoadingSkeleton from "./UsersLoadingSkeleton";
+import { useAuthStore } from "../store/useAuthStore";
 
-const ContactList = () => {
-  const { getMyChatPatterns, allContacts, isUsersLoading, setSelectedUser } =
+function ContactList() {
+  const { getAllContacts, allContacts, setSelectedUser, isUsersLoading } =
     useChatStore();
+  const { onlineUsers } = useAuthStore();
+
   useEffect(() => {
-    getMyChatPatterns();
-  }, [getMyChatPatterns]);
+    getAllContacts();
+  }, [getAllContacts]);
+
   if (isUsersLoading) return <UsersLoadingSkeleton />;
+
   return (
     <>
-      {" "}
       {allContacts.map((contact) => (
         <div
           key={contact._id}
@@ -25,20 +29,14 @@ const ContactList = () => {
               }`}
             >
               <div className="size-12 rounded-full">
-                <img
-                  src={contact.profilePic || "/avatar.png"}
-                  alt={contact.fullName}
-                />
+                <img src={contact.profilePic || "/avatar.png"} />
               </div>
             </div>
-            <h4 className="text-slate-200 font-medium truncate">
-              {contact.fullName}
-            </h4>
+            <h4 className="text-slate-200 font-medium">{contact.fullName}</h4>
           </div>
         </div>
       ))}
     </>
   );
-};
-
+}
 export default ContactList;
